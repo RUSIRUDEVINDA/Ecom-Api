@@ -1,8 +1,9 @@
 package products
 
 import (
-	"encoding/json"
 	"net/http"
+	"github.com/RUSIRUDEVINDA/Ecom-Api/internal/json" 
+	
 )
 
 type handler struct {
@@ -23,7 +24,5 @@ func (h *handler) ListProducts(w http.ResponseWriter, r *http.Request) {
 		Products []string `json:"products"`
 	}{}
 
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(products)
+	json.Header(w, http.StatusOK, products)
 }
