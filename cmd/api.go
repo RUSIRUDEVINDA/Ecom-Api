@@ -5,9 +5,11 @@ import (
 	"net/http"
 	"time"
 
+	repo "github.com/RUSIRUDEVINDA/Ecom-Api/internal/adapteres/postgresql/sqlc"
+	"github.com/RUSIRUDEVINDA/Ecom-Api/internal/products"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
-	"github.com/RUSIRUDEVINDA/Ecom-Api/internal/products"
+	"github.com/jackc/pgx/v5"
 )
 
 // mount
@@ -29,8 +31,9 @@ func (app *application) mount() http.Handler {
 		w.Write([]byte("All Good for now"))
 	})
 
-	productService:= products.NewService() 
-	productHandler := products.NewHandler(productService)  
+	//queries:= repo.New(app.db)
+	productService := products.NewService(repo.New(app.db))
+	productHandler := products.NewHandler(productService)
 	r.Get("/products", productHandler.ListProducts)
 	return r
 }
@@ -50,8 +53,7 @@ func (app *application) run(h http.Handler) error {
 
 type application struct {
 	config config
-	//logger
-	//db driver
+	db *pgx.Conn
 }
 
 type config struct {

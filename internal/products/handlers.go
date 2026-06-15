@@ -19,16 +19,12 @@ func NewHandler(service Service) *handler {
 
 // ListProducts is a handler function that retrieves a list of products and writes the response as JSON.
 func (h *handler) ListProducts(w http.ResponseWriter, r *http.Request) {
-	err:=h.service.ListProducts(r.Context())
+	products, err:=h.service.ListProducts(r.Context())
 	if err!=nil{
 		log.Println(err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-
-	products := struct {
-		Products []string `json:"products"`
-	}{}
 
 	json.Header(w, http.StatusOK, products)
 }
