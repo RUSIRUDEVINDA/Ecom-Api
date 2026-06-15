@@ -2,6 +2,7 @@ package products
 
 import (
 	"net/http"
+	"log"
 	"github.com/RUSIRUDEVINDA/Ecom-Api/internal/json" 
 	
 )
@@ -16,9 +17,14 @@ func NewHandler(service Service) *handler {
 	}
 }
 
+// ListProducts is a handler function that retrieves a list of products and writes the response as JSON.
 func (h *handler) ListProducts(w http.ResponseWriter, r *http.Request) {
-	//1. call the service -> service.ListProducts()
-	//2. return the response to the client(return JSON an http request)
+	err:=h.service.ListProducts(r.Context())
+	if err!=nil{
+		log.Println(err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 
 	products := struct {
 		Products []string `json:"products"`
